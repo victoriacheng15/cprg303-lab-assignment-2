@@ -1,12 +1,13 @@
-import { StyleSheet, View, Text, FlatList } from "react-native";
+import {StyleSheet, View, Text, FlatList, Button} from "react-native";
+import {router} from "expo-router";
 
 export default function Fruits() {
+	const FruitList = ["apple", "orange", "mango"];
 	return (
 		<View style={styles.container}>
-			<FlatList
-				data={[{ key: "Apple" }, { key: "Orange" }, { key: "Mango" }]}
-				renderItem={({ item }) => <Text>{item.key}</Text>}
-			/>
+			{FruitList.map((fruit, index) => (
+				<Button title={`${fruit}`} key={index} onPress={() => router.push(`/${fruit}Page`)} />
+			))}
 		</View>
 	);
 }
