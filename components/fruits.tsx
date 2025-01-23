@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, FlatList, Button} from "react-native";
+import {StyleSheet, View, Button} from "react-native";
 import {router} from "expo-router";
 
 export default function Fruits() {
