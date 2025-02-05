@@ -6,7 +6,6 @@ import { router } from "expo-router";
 export default function ApplePage() {
 	return (
 		<View>
-			<Button title="return to main page" onPress={() => router.push("/")} />
 			<Text>Mango image</Text>
 			<Image
 				source={{

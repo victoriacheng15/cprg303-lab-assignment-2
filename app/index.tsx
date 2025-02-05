@@ -1,4 +1,5 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Button } from "react-native";
+import { router } from "expo-router";
 import Fruits from "../components/fruits";
 
 export default function App() {
@@ -6,6 +7,7 @@ export default function App() {
 		<View style={styles.container}>
 			<Text>Welcome to this app</Text>
 			<Fruits />
+			<Button title="Lab 3" onPress={() => router.push("/lab3")} />
 		</View>
 	);
 }
@@ -13,8 +15,7 @@ export default function App() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		alignItems: "center",
-		justifyContent: "center",
+		gap: 20,
 		padding: 50,
 	},
 });

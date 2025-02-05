@@ -18,8 +18,9 @@ export default function Fruits() {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		alignItems: "center",
+		gap: 10,
+		flexDirection: "row",
 		justifyContent: "center",
+		alignItems: "center",
 	},
 });

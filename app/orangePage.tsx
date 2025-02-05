@@ -6,7 +6,6 @@ import { fruitStyles } from "../utils/FruitStyles";
 export default function ApplePage() {
 	return (
 		<View>
-			<Button title="return to main page" onPress={() => router.push("/")} />
 			<Text>Orange image</Text>
 			<Image
 				source={{
