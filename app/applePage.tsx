@@ -7,7 +7,6 @@ export default function ApplePage() {
 	const router = useRouter();
 	return (
 		<View>
-			<Button title="return to main page" onPress={() => router.push("/")} />
 			<Text>Apple image</Text>
 			<Image
 				source={{
