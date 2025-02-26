@@ -21,6 +21,11 @@ export default function App() {
 			name: "Lab 4",
 			link: "/lab4",
 		},
+		{
+			id: 5,
+			name: "Lab 5",
+			link: "/lab5",
+		},
 	];
 	return (
 		<View style={styles.container}>
