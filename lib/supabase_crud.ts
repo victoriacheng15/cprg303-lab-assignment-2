@@ -33,3 +33,27 @@ export async function createTask(task: string) {
 
 	return data[0];
 }
+
+export async function updateTask(id: number, task: string) {
+	const TABLE_NAME = "tasks";
+	const { data, error } = await supabase
+		.from(TABLE_NAME)
+		.update({ task })
+		.eq("id", id)
+		.select();
+
+	if (error) {
+		throw error;
+	}
+
+	return data;
+}
+
+export async function deleteTask(id: number) {
+	const TABLE_NAME = "tasks";
+	const { error } = await supabase.from(TABLE_NAME).delete().eq("id", id);
+
+	if (error) {
+		throw error;
+	}
+}
