@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
+import { StyleSheet, View, Text, ScrollView } from "react-native";
 import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
-import { getVisitors, getTasks, createTask } from "../lib/supabase_crud";
+  getVisitors,
+  getTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+} from "../lib/supabase_crud";
+import AddTaskForm from "../components/AddTaskForm";
+import TaskDisplay from "../components/TaskDisplay";
 
 interface Visitor {
   id: number;
@@ -24,8 +26,10 @@ export default function Lab6() {
   const [visitors, setVisitors] = useState<Visitor[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState("");
+  const [editingTask, setEditingTask] = useState<number | null>(null);
+  const [editTaskText, setEditTaskText] = useState("");
 
-  const handleAddTask = async () => {
+  async function handleAddTask() {
     if (newTask.trim()) {
       try {
         const newTaskData = await createTask(newTask);
@@ -35,7 +39,32 @@ export default function Lab6() {
         console.error("Error adding task:", error);
       }
     }
-  };
+  }
+
+  async function handleUpdateTask(id: number) {
+    if (editTaskText.trim()) {
+      try {
+        await updateTask(id, editTaskText);
+        const updatedTasks = tasks.map((task) =>
+          task.id === id ? { ...task, task: editTaskText } : task
+        );
+        setTasks(updatedTasks);
+        setEditingTask(null);
+        setEditTaskText("");
+      } catch (error) {
+        console.error("Error updating task:", error);
+      }
+    }
+  }
+
+  async function handleDeleteTask(id: number) {
+    try {
+      await deleteTask(id);
+      setTasks(tasks.filter((task) => task.id !== id));
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  }
 
   useEffect(() => {
     async function fetchVisitors() {
@@ -52,40 +81,58 @@ export default function Lab6() {
     fetchTasks();
   }, []);
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Welcome to Lab 6</Text>
-      <Text style={styles.title}>Visitor:</Text>
-      {visitors.map((visitor) => (
-        <Text style={styles.text} key={visitor.id}>
-          {visitor.visitor_name}
-        </Text>
-      ))}
-      <View style={styles.formContainer}>
-        <TextInput
-          style={styles.input}
-          value={newTask}
-          onChangeText={setNewTask}
-          placeholder="Enter new task"
+    <ScrollView style={styles.scrollView}>
+      <View style={styles.container}>
+        <Text style={styles.heading}>Welcome to Lab 6</Text>
+        <Text style={styles.title}>Visitor:</Text>
+        <View style={styles.visitorContainer}>
+          {visitors.map((visitor) => (
+            <Text style={styles.text} key={visitor.id}>
+              {visitor.visitor_name}
+            </Text>
+          ))}
+        </View>
+        <Text style={styles.title}>Tasks:</Text>
+        <AddTaskForm
+          newTask={newTask}
+          setNewTask={setNewTask}
+          handleAddTask={handleAddTask}
         />
-        <TouchableOpacity style={styles.button} onPress={handleAddTask}>
-          <Text style={styles.buttonText}>Add Task</Text>
-        </TouchableOpacity>
+        {tasks.map((task) => (
+          <TaskDisplay
+            key={task.id}
+            task={task}
+            editingTask={editingTask}
+            editTaskText={editTaskText}
+            setEditTaskText={setEditTaskText}
+            setEditingTask={setEditingTask}
+            handleUpdateTask={handleUpdateTask}
+            handleDeleteTask={handleDeleteTask}
+          />
+        ))}
       </View>
-      <Text style={styles.title}>Tasks:</Text>
-      {tasks.map((task) => (
-        <Text style={styles.text} key={task.id}>
-          {task.task}
-        </Text>
-      ))}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
   container: {
     padding: 20,
     alignItems: "center",
     justifyContent: "center",
+  },
+  visitorContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 16,
+    width: "100%",
+    borderBottomWidth: 2,
+    borderBottomColor: "#000",
+    paddingBottom: 15,
+    marginBottom: 15,
   },
   heading: {
     fontSize: 24,
@@ -99,26 +146,5 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 18,
     marginBottom: 10,
-  },
-  formContainer: {
-    width: "100%",
-    marginBottom: 20,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  button: {
-    backgroundColor: "#007AFF",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
   },
 });
